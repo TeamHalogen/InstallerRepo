@@ -1,4 +1,4 @@
 # This needs to be changed on every update, full URL to the latest zip
 fullrom=http://download.halogenos.org/upload/rom/devices/oneplus2/XOS-6.0-blah.zip
 fwzip=http://download.halogenos.org/upload/fw/devices/oneplus2/OOS3-firmware.zip
-recovzip=http://download.halogenos.org/upload/recovery/devices/oneplus2/twrp-3.0.2-1-oneplus2.img
+recovimg=http://download.halogenos.org/upload/recovery/devices/oneplus2/twrp-3.0.2-1-oneplus2.img
