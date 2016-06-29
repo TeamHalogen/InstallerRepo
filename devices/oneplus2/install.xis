@@ -31,16 +31,6 @@ echo Installing halogenOS...
 adb shell twrp flash /tmp/xos.zip || goto :error
 echo Installation complete.
 echo.
-echo Installing additional stuff...
-adb push data/devices/oneplus2/custom/ /sdcard/.xoscustom/ || goto :error
-adb shell for z in $(ls /sdcard/.xoscustom/); do; twrp flash /sdcard/.xoscustom/$z; done || goto :error
-echo Done.
-echo.
-echo Rebooting...
-adb shell reboot || goto :error
-adb wait-for-device || goto :error
-adb shell "[ -z \"$(getprop ro.XOS.version)\" ] && echo \"Something went wrong...\" || echo \"Success!\"" || 
-goto :error
 echo Finished.
 exit 0
 
