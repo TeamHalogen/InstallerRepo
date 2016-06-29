@@ -2,3 +2,5 @@
 fullrom=http://download.halogenos.org/upload/rom/devices/oneplus2/XOS-6.0-blah.zip
 fwzip=http://download.halogenos.org/upload/fw/devices/oneplus2/OOS3-firmware.zip
 recovimg=http://download.halogenos.org/upload/recovery/devices/oneplus2/twrp-3.0.2-1-oneplus2.img
+# The installer script is just a batch file
+installscript=https://raw.githubusercontent.com/TeamHalogen/InstallerRepo/XOS-6.0/devices/oneplus2/install.xis

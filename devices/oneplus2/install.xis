@@ -1,0 +1,43 @@
+:: halogenOS installer script for OnePlus 2
+@echo off
+
+echo Waiting for device...
+adb wait-for-device
+echo Rebooting into TWRP...
+adb shell reboot recovery
+echo Waiting for device...
+adb wait-for-device
+echo Flashing Firmware...
+adb push data/devices/oneplus2/fwzip.zip /tmp/fwzip.zip
+adb shell twrp flash /tmp/fwzip
+adb wait-for-device
+echo Flashing recovery...
+adb push data/devices/oneplus2/recovimg.img /tmp/recovery.img
+adb shell dd if=/tmp/recovery.img of=/dev/block/bootdevice/by-name/recovery
+echo Rebooting...
+adb shell reboot recovery
+adb wait-for-device
+echo Wiping data...
+adb shell twrp wipe data
+echo Wiping system...
+adb shell twrp wipe system
+echo Wiping cache...
+adb shell twrp wipe cache
+echo Wipe complete.
+echo.
+echo Copying installation files...
+adb push data/devices/oneplus2/XOS-ROM.zip /tmp/xos.zip
+echo Installing halogenOS...
+adb shell twrp flash /tmp/xos.zip
+echo Installation complete.
+echo.
+echo Installing additional stuff...
+adb push data/devices/oneplus2/custom/ /sdcard/.xoscustom/
+adb shell for z in $(ls /sdcard/.xoscustom/); do; twrp flash /sdcard/.xoscustom/$z; done
+echo Done.
+echo.
+echo Rebooting...
+adb shell reboot
+adb wait-for-device
+adb shell [ -z "$(getprop ro.XOS.version)" ] && echo "Something went wrong..." || echo "Success!"
+echo "Finished."
