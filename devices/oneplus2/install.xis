@@ -2,42 +2,49 @@
 @echo off
 
 echo Waiting for device...
-adb wait-for-device
+adb wait-for-device || goto :error
 echo Rebooting into TWRP...
-adb shell reboot recovery
+adb shell reboot recovery || goto :error
 echo Waiting for device...
-adb wait-for-device
+adb wait-for-device || goto :error
 echo Flashing Firmware...
-adb push data/devices/oneplus2/fwzip.zip /tmp/fwzip.zip
-adb shell twrp flash /tmp/fwzip
-adb wait-for-device
+adb push data/devices/oneplus2/fwzip.zip /tmp/fwzip.zip || goto :error
+adb shell twrp flash /tmp/fwzip || goto :error
+adb wait-for-device || goto :error
 echo Flashing recovery...
-adb push data/devices/oneplus2/recovimg.img /tmp/recovery.img
-adb shell dd if=/tmp/recovery.img of=/dev/block/bootdevice/by-name/recovery
+adb push data/devices/oneplus2/recovimg.img /tmp/recovery.img || goto :error
+adb shell dd if=/tmp/recovery.img of=/dev/block/bootdevice/by-name/recovery || goto :error
 echo Rebooting...
-adb shell reboot recovery
-adb wait-for-device
+adb shell reboot recovery || goto :error
+adb wait-for-device || goto :error
 echo Wiping data...
-adb shell twrp wipe data
+adb shell twrp wipe data || goto :error
 echo Wiping system...
-adb shell twrp wipe system
+adb shell twrp wipe system || goto :error
 echo Wiping cache...
-adb shell twrp wipe cache
+adb shell twrp wipe cache || goto :error
 echo Wipe complete.
 echo.
 echo Copying installation files...
-adb push data/devices/oneplus2/XOS-ROM.zip /tmp/xos.zip
+adb push data/devices/oneplus2/XOS-ROM.zip /tmp/xos.zip || goto :error
 echo Installing halogenOS...
-adb shell twrp flash /tmp/xos.zip
+adb shell twrp flash /tmp/xos.zip || goto :error
 echo Installation complete.
 echo.
 echo Installing additional stuff...
-adb push data/devices/oneplus2/custom/ /sdcard/.xoscustom/
-adb shell for z in $(ls /sdcard/.xoscustom/); do; twrp flash /sdcard/.xoscustom/$z; done
+adb push data/devices/oneplus2/custom/ /sdcard/.xoscustom/ || goto :error
+adb shell for z in $(ls /sdcard/.xoscustom/); do; twrp flash /sdcard/.xoscustom/$z; done || goto :error
 echo Done.
 echo.
 echo Rebooting...
-adb shell reboot
-adb wait-for-device
-adb shell [ -z "$(getprop ro.XOS.version)" ] && echo "Something went wrong..." || echo "Success!"
-echo "Finished."
+adb shell reboot || goto :error
+adb wait-for-device || goto :error
+adb shell "[ -z \"$(getprop ro.XOS.version)\" ] && echo \"Something went wrong...\" || echo \"Success!\"" || 
+goto :error
+echo Finished.
+exit 0
+
+:error
+:: Please only use !!! here, it will be used by the installer to identify errors!
+echo !!! Error occured
+exit 1
